@@ -31,7 +31,11 @@ class BaseModel:
         updated_at = datetime.datetime.now()
 
     def __str__(self):
-        """Returns the class name and id of an instance"""
+        """Returns the information about an instance/object like:
+            Class name,
+            Instance id,
+            Dictionary of the attributes of instance
+        """
 
         # for the name of class use -> self.__class__.__name__
         """self.__dict__ is a dictionary that stores
