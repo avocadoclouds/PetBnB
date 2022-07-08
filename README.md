@@ -1,6 +1,5 @@
 # PetBnB
 
----
 
 #### What is PetBnB
 
