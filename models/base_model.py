@@ -10,31 +10,48 @@ class BaseModel:
     """
     # self stands for the instance itself
 
-    # def __init__(self, id, created_at, updated_at):
-    #     """
-    #     Defines public instance attributes:
-    #         id: (string) That's assigned a unique id.
-    #         created_at: (datetime) That's assigned the current date
-    #                     when an instance is created.
-    #         updated_at: (datetime) That's assigned the the current datetime
-    #                     when an instance is created and it will be updated
-    #                     every time you change your object.
-    #     """
-    #     self.id = id
-    #     self.created_at = created_at
-    #     self.updated_at = updated_at
+    def __init__(self, *args, **kwargs):
+        """
+        Defines public instance attributes:
+            id: (string) That's assigned a unique id.
+            created_at: (datetime) That's assigned the current date
+                        when an instance is created.
+            updated_at: (datetime) That's assigned the the current datetime
+                        when an instance is created and it will be updated
+                        every time you change your object.
+        """
+        # each key of the kwargs dictionay is an attribute name, except for
+        # __class__ that shouldn't be added as an attribute.
+        # each value of the dict is an attribute name.
+        if len(kwargs) != 0:
+            for key, value in kwargs.items():
+                # created_at is a str in kwargs dic, change to datetime format
+                if key == 'created_at':
+                    if type('created_at') == str:
+                        value = datetime.strptime(
+                            value, '%Y-%m-%dT%H:%M:%S.%f')
 
-    #     id = uuid.uuid4()
+                # updated_at is a str in kwargs dic, change to datetime format
+                elif key == 'updated_at':
+                    if type('updated_at') == str:
+                        value = datetime.strptime(
+                            value, '%Y-%m-%dT%H:%M:%S.%f')
 
-    #     # .now() picks up the current time when instance is intialised
-    #     created_at = datetime.datetime.now()
-    #     updated_at = datetime.datetime.now()
+                # anything else that's not attribute like __class__
+                self.__dict__[key] = value
 
-    id = uuid.uuid4()
+                # or you can say if key != '__class__', setarr(self, key, value)
 
-    # .now() picks up the current time when instance is intialised
-    created_at = datetime.now()
-    updated_at = datetime.now()
+        else:
+            # if no kwargs then generate you own
+            # id should str when saved in __dict__, can not wait until to_dict()
+            # runs for id to be string :)
+            self.id = str(uuid.uuid4())
+
+            # .now() picks up the current time when instance is intialised
+
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
 
     def __str__(self):
         """Returns the information about an instance/object like:
@@ -63,9 +80,10 @@ class BaseModel:
 
     def to_dict(self):
         """
+        Generate a dictionary representation of an instance. 
         Returns a dictionary containing all keys/values of __dict__
         of the instance. Plus the class name, created_at and updated_at
-        as string object in ISO format.
+        as string object in ISO format. 
         """
 
         dic = {}
@@ -76,9 +94,8 @@ class BaseModel:
         # note: keys have to be strings
         dic['__class__'] = self.__class__.__name__
 
-        # add id after changing to str
-        id = str(self.id)
-        dic['id'] = id
+        # No need to add id because it's in __dict__
+        #dic['id'] = id
 
         # change created_at & updated_at to ISO format
 
